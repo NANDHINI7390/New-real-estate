@@ -1,0 +1,56 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-serif: 'Playfair Display', Georgia, serif;
+    --color-white: #ffffff;
+    --color-primary-navy: #102a43;
+    --color-primary-navy-dark: #0b1d30;
+    --color-warm-ivory: #f7f5f0;
+    --color-champagne-gold: #c6a15b;
+    --color-champagne-gold-hover: #b5914a;
+    --color-soft-grey: #e8e6e1;
+    --color-charcoal: #20252b;
+    --color-charcoal-muted: #52606d;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    background-color: #f7f5f0;
+    color: #20252b;
+  }
+
+  h1, h2, h3, .font-display {
+    font-family: var(--font-serif);
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+::-webkit-scrollbar-track {
+  background: #f7f5f0;
+}
+::-webkit-scrollbar-thumb {
+  background: #e8e6e1;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #c6a15b;
+}
+
+/* Refined Real Estate Shadow & Card Hover */
+.luxury-shadow {
+  box-shadow: 0 10px 30px -5px rgba(16, 42, 67, 0.06), 0 4px 10px -2px rgba(16, 42, 67, 0.03);
+}
+
+.luxury-card-hover {
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.luxury-card-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 35px -8px rgba(16, 42, 67, 0.12), 0 6px 16px -4px rgba(16, 42, 67, 0.05);
+}

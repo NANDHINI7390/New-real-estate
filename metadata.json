@@ -1,0 +1,6 @@
+{
+  "name": "Pondicherry Realty - Real Estate Digital Platform",
+  "description": "Complete end-to-end real estate digital platform with customer discovery portal, interactive mortgage calculator, property comparison, visit scheduling, and full admin lead/CRM management.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
