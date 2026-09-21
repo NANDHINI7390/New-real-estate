@@ -1,6 +1,56 @@
 export type PropertyType = 'Villa' | 'Apartment' | 'Independent House' | 'Plot' | 'Commercial';
 export type ListingType = 'BUY' | 'RENT';
-export type PropertyStatus = 'AVAILABLE' | 'FEATURED' | 'UNDER_OFFER' | 'SOLD' | 'RENTED';
+export type PropertyStatus = 'AVAILABLE' | 'PENDING' | 'FEATURED' | 'UNDER_OFFER' | 'SOLD' | 'RENTED' | 'INACTIVE';
+export type ApprovalStatus = 'PENDING_APPROVAL' | 'APPROVED' | 'REJECTED' | 'CHANGES_REQUESTED';
+
+export type UserRole = 'buyer' | 'seller' | 'agent' | 'admin';
+
+export interface UserProfile {
+  uid: string;
+  email: string;
+  displayName: string;
+  role: UserRole;
+  phone?: string;
+  agencyName?: string;
+  photoURL?: string;
+  activePackageId?: string;
+  packageExpiresAt?: string;
+  createdAt: string;
+  updatedAt?: string;
+}
+
+export interface ListingPackage {
+  id: string;
+  name: string;
+  tagline: string;
+  price: number; // in INR
+  durationDays: number;
+  listingLimit: number;
+  isFeaturedPlacement: boolean;
+  isPremiumPlacement: boolean;
+  features: string[];
+  badgeText?: string;
+  isActive: boolean;
+  createdAt?: string;
+}
+
+export interface PackagePurchase {
+  id: string;
+  userId: string;
+  userName: string;
+  userEmail: string;
+  userRole: UserRole;
+  packageId: string;
+  packageName: string;
+  amount: number;
+  durationDays: number;
+  status: 'ACTIVE' | 'EXPIRED';
+  paymentMethod: string;
+  transactionRef: string;
+  propertyTitle?: string;
+  createdAt: string;
+  expiresAt: string;
+}
 
 export interface PropertySpec {
   bedrooms: number;
@@ -30,36 +80,73 @@ export interface Property {
   location: string;
   subLocation: string;
   locality: string;
-  price: number; // In INR (raw number, e.g., 45000000 = 4.5 Cr, 8500000 = 85 L, 35000 for rent)
+  price: number; // In INR
   displayPrice: string; // "₹ 4.50 Cr", "₹ 85 L", "₹ 45,000 / mo"
   priceNegotiable: boolean;
   pricePerSqFt?: number;
   propertyType: PropertyType;
   listingType: ListingType;
   status: PropertyStatus;
+  approvalStatus?: ApprovalStatus;
+  rejectionReason?: string;
   isFeatured: boolean;
+  isPremium?: boolean;
   isNew: boolean;
   heroImage: string;
   gallery: string[];
+  videoUrl?: string;
   specs: PropertySpec;
   description: string;
   highlights: string[];
   amenities: string[];
   nearbyFacilities: NearbyFacility[];
-  agentId: string;
+  ownerId?: string;
+  ownerName?: string;
+  ownerEmail?: string;
+  ownerPhone?: string;
+  agentId?: string;
+  agentName?: string;
+  listingPackageId?: string;
+  viewsCount?: number;
+  inquiriesCount?: number;
   mapCoordinates: { lat: number; lng: number };
   createdAt: string;
+  updatedAt?: string;
 }
 
 export type AdminTab =
   | 'overview'
+  | 'approvals'
   | 'properties'
   | 'inquiries'
   | 'visits'
+  | 'packages'
+  | 'payments'
+  | 'users'
   | 'agents'
   | 'clients'
   | 'analytics'
+  | 'reports'
+  | 'cms'
   | 'settings';
+
+export type SellerTab =
+  | 'properties'
+  | 'add-property'
+  | 'enquiries'
+  | 'visits'
+  | 'packages'
+  | 'payments'
+  | 'profile';
+
+export type AgentTab =
+  | 'properties'
+  | 'add-property'
+  | 'leads'
+  | 'enquiries'
+  | 'visits'
+  | 'clients'
+  | 'performance';
 
 export type LeadStatus =
   | 'NEW'
@@ -94,6 +181,7 @@ export interface Inquiry {
   status: LeadStatus;
   createdAt: string;
   assignedAgentId?: string;
+  ownerId?: string;
   notes: { id: string; text: string; author: string; timestamp: string }[];
 }
 
@@ -113,6 +201,7 @@ export interface SiteVisit {
   status: VisitStatus;
   assignedAgentId: string;
   assignedAgent?: string; // alias
+  ownerId?: string;
   notes?: string;
   createdAt: string;
 }

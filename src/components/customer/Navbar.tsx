@@ -12,7 +12,13 @@ import {
   Globe,
   ChevronRight,
   Sparkles,
+  Plus,
+  Home,
+  Briefcase,
+  Shield,
+  UserCheck,
 } from 'lucide-react';
+import { RoleSwitcher } from '../common/RoleSwitcher';
 
 interface NavbarProps {
   onOpenScheduleModal: () => void;
@@ -42,6 +48,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenScheduleModal, onOpenInqui
     { label: 'Buy', page: 'buy' },
     { label: 'Rent', page: 'rent' },
     { label: 'Projects', page: 'projects' },
+    { label: 'List Property', page: 'list-property', highlight: true },
     { label: 'Services', page: 'services' },
     { label: 'About', page: 'about' },
     { label: 'Contact', page: 'contact' },
@@ -83,15 +90,20 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenScheduleModal, onOpenInqui
                 <button
                   key={link.label}
                   onClick={() => handleNavClick(link.page)}
-                  className={`px-3.5 py-2 rounded-lg text-sm font-medium transition-colors relative ${
-                    isActive
+                  className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors relative ${
+                    link.highlight
+                      ? 'text-[#C6A15B] font-bold hover:bg-amber-50'
+                      : isActive
                       ? 'text-[#102A43] font-bold'
                       : 'text-[#52606D] hover:text-[#102A43] hover:bg-[#F7F5F0]'
                   }`}
                 >
-                  {link.label}
-                  {isActive && (
-                    <span className="absolute bottom-0 left-3.5 right-3.5 h-0.5 bg-[#C6A15B] rounded-full" />
+                  <span className="flex items-center gap-1">
+                    {link.highlight && <Sparkles className="w-3.5 h-3.5 text-[#C6A15B]" />}
+                    {link.label}
+                  </span>
+                  {isActive && !link.highlight && (
+                    <span className="absolute bottom-0 left-3 right-3 h-0.5 bg-[#C6A15B] rounded-full" />
                   )}
                 </button>
               );
@@ -99,42 +111,21 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenScheduleModal, onOpenInqui
           </nav>
 
           {/* Right Action Icons, View Switcher & Buttons */}
-          <div className="hidden sm:flex items-center gap-2.5 xl:gap-3">
-            {/* View Mode Toggle: Customer Website / Admin Dashboard */}
-            <div className="flex items-center bg-[#F7F5F0] p-1 rounded-xl border border-[#E8E6E1]">
-              <button
-                onClick={() => {
-                  setViewMode('customer');
-                  setCustomerPage('home');
-                }}
-                className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-bold transition-all ${
-                  viewMode === 'customer'
-                    ? 'bg-[#102A43] text-white shadow-xs'
-                    : 'text-[#52606D] hover:text-[#102A43]'
-                }`}
-                title="Customer Showcase Portal"
-              >
-                <Globe className="w-3.5 h-3.5 text-[#C6A15B]" />
-                <span className="hidden xl:inline">Customer Website</span>
-                <span className="xl:hidden">Website</span>
-              </button>
-              <button
-                onClick={() => setViewMode('admin')}
-                className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-bold transition-all relative ${
-                  viewMode === 'admin'
-                    ? 'bg-[#102A43] text-white shadow-xs'
-                    : 'text-[#52606D] hover:text-[#102A43]'
-                }`}
-                title="Agency Admin & CRM Dashboard"
-              >
-                <LayoutDashboard className="w-3.5 h-3.5 text-[#C6A15B]" />
-                <span className="hidden xl:inline">Admin Dashboard</span>
-                <span className="xl:hidden">Admin</span>
-                {pendingBadgeCount > 0 && (
-                  <span className="w-2 h-2 rounded-full bg-[#C6A15B] absolute -top-0.5 -right-0.5 animate-pulse" />
-                )}
-              </button>
-            </div>
+          <div className="hidden sm:flex items-center gap-2 xl:gap-2.5">
+            {/* 4-Role Identity Switcher */}
+            <RoleSwitcher />
+
+            {/* List Your Property Primary CTA */}
+            <button
+              onClick={() => {
+                setCustomerPage('list-property');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#C6A15B] hover:bg-amber-400 text-[#102A43] text-xs font-extrabold shadow-xs transition-all active:scale-98 cursor-pointer"
+            >
+              <Plus className="w-3.5 h-3.5" />
+              <span>List Property</span>
+            </button>
 
             {/* Compare Badge Button */}
             <button
@@ -174,39 +165,20 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenScheduleModal, onOpenInqui
               )}
             </button>
 
-            {/* Direct Phone link */}
-            <a
-              href="tel:+919840123456"
-              className="hidden 2xl:flex items-center gap-2 text-xs font-semibold text-[#52606D] px-3 py-2 rounded-lg bg-[#F7F5F0] hover:bg-[#E8E6E1] transition-colors"
-            >
-              <Phone className="w-3.5 h-3.5 text-[#C6A15B]" />
-              <span className="text-[#20252B]">+91 98401 23456</span>
-            </a>
-
             {/* Schedule Visit Primary Button */}
             <button
               onClick={onOpenScheduleModal}
-              className="flex items-center gap-2 px-3.5 xl:px-4 py-2.5 rounded-xl bg-[#102A43] hover:bg-[#0B1D30] text-white text-xs xl:text-sm font-semibold shadow-xs transition-all active:scale-98 cursor-pointer"
+              className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#102A43] hover:bg-[#0B1D30] text-white text-xs font-semibold shadow-xs transition-all active:scale-98 cursor-pointer"
             >
-              <Calendar className="w-4 h-4 text-[#C6A15B]" />
-              <span>Schedule Visit</span>
+              <Calendar className="w-3.5 h-3.5 text-[#C6A15B]" />
+              <span className="hidden xl:inline">Schedule Visit</span>
+              <span className="xl:hidden">Visit</span>
             </button>
           </div>
 
           {/* Mobile Actions & Menu Toggle */}
           <div className="flex sm:hidden items-center gap-2">
-            {/* Quick Admin switch on mobile header */}
-            <button
-              onClick={() => setViewMode('admin')}
-              title="Admin Dashboard"
-              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-[#102A43] text-white text-xs font-bold relative"
-            >
-              <LayoutDashboard className="w-3.5 h-3.5 text-[#C6A15B]" />
-              <span>Admin</span>
-              {pendingBadgeCount > 0 && (
-                <span className="w-2 h-2 rounded-full bg-[#C6A15B] absolute -top-0.5 -right-0.5 animate-pulse" />
-              )}
-            </button>
+            <RoleSwitcher />
 
             <button
               onClick={() => {
@@ -236,9 +208,9 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenScheduleModal, onOpenInqui
       {mobileMenuOpen && (
         <div className="lg:hidden border-t border-[#E8E6E1] bg-[#F7F5F0] px-4 pt-4 pb-6 space-y-4 shadow-xl">
           {/* Mobile Platform Switcher */}
-          <div className="p-2.5 rounded-2xl bg-white border border-[#E8E6E1] space-y-2">
+          <div className="p-3 rounded-2xl bg-white border border-[#E8E6E1] space-y-2">
             <div className="text-[10px] font-extrabold text-[#52606D] uppercase tracking-widest px-1">
-              Select Workspace Mode
+              Select Marketplace Workspace
             </div>
             <div className="grid grid-cols-2 gap-2">
               <button
@@ -246,31 +218,56 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenScheduleModal, onOpenInqui
                   setViewMode('customer');
                   setMobileMenuOpen(false);
                 }}
-                className={`flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl text-xs font-bold transition-all ${
+                className={`flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl text-xs font-bold transition-all ${
                   viewMode === 'customer'
                     ? 'bg-[#102A43] text-white shadow-xs'
                     : 'bg-[#F7F5F0] text-[#52606D] border border-[#E8E6E1] hover:bg-white'
                 }`}
               >
-                <Globe className="w-4 h-4 text-[#C6A15B]" />
-                <span>Customer Website</span>
+                <Globe className="w-3.5 h-3.5 text-[#C6A15B]" />
+                <span>Buyer Web</span>
+              </button>
+              <button
+                onClick={() => {
+                  setViewMode('seller');
+                  setMobileMenuOpen(false);
+                }}
+                className={`flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl text-xs font-bold transition-all ${
+                  viewMode === 'seller'
+                    ? 'bg-[#102A43] text-white shadow-xs'
+                    : 'bg-[#F7F5F0] text-[#52606D] border border-[#E8E6E1] hover:bg-white'
+                }`}
+              >
+                <Home className="w-3.5 h-3.5 text-amber-500" />
+                <span>Seller Desk</span>
+              </button>
+              <button
+                onClick={() => {
+                  setViewMode('agent');
+                  setMobileMenuOpen(false);
+                }}
+                className={`flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl text-xs font-bold transition-all ${
+                  viewMode === 'agent'
+                    ? 'bg-[#102A43] text-white shadow-xs'
+                    : 'bg-[#F7F5F0] text-[#52606D] border border-[#E8E6E1] hover:bg-white'
+                }`}
+              >
+                <Briefcase className="w-3.5 h-3.5 text-blue-500" />
+                <span>Agent Portal</span>
               </button>
               <button
                 onClick={() => {
                   setViewMode('admin');
                   setMobileMenuOpen(false);
                 }}
-                className={`flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl text-xs font-bold transition-all relative ${
+                className={`flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl text-xs font-bold transition-all ${
                   viewMode === 'admin'
                     ? 'bg-[#102A43] text-white shadow-xs'
                     : 'bg-[#F7F5F0] text-[#52606D] border border-[#E8E6E1] hover:bg-white'
                 }`}
               >
-                <LayoutDashboard className="w-4 h-4 text-[#C6A15B]" />
-                <span>Admin Dashboard</span>
-                {pendingBadgeCount > 0 && (
-                  <span className="w-2 h-2 rounded-full bg-[#C6A15B] absolute top-1.5 right-1.5 animate-pulse" />
-                )}
+                <Shield className="w-3.5 h-3.5 text-purple-500" />
+                <span>Admin Hub</span>
               </button>
             </div>
           </div>
@@ -282,7 +279,9 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenScheduleModal, onOpenInqui
                 key={link.label}
                 onClick={() => handleNavClick(link.page)}
                 className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium text-left transition-colors ${
-                  customerPage === link.page
+                  link.highlight
+                    ? 'bg-[#C6A15B] text-[#102A43] font-bold col-span-2'
+                    : customerPage === link.page
                     ? 'bg-[#102A43] text-white font-semibold'
                     : 'bg-white border border-[#E8E6E1] text-[#20252B] hover:bg-[#F7F5F0]'
                 }`}
@@ -295,6 +294,16 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenScheduleModal, onOpenInqui
 
           {/* Mobile CTA */}
           <div className="pt-2 border-t border-[#E8E6E1] flex flex-col gap-2">
+            <button
+              onClick={() => {
+                setCustomerPage('list-property');
+                setMobileMenuOpen(false);
+              }}
+              className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-[#C6A15B] text-[#102A43] text-sm font-extrabold shadow-xs"
+            >
+              <Plus className="w-4 h-4" />
+              <span>List Your Property in Pondicherry</span>
+            </button>
             <button
               onClick={() => {
                 onOpenScheduleModal();

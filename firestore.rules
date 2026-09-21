@@ -1,0 +1,121 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Default Deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && (
+        request.auth.token.email == 'nandygavas@gmail.com' ||
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+      );
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    // Users collection
+    match /users/{userId} {
+      allow get: if isSignedIn() && (request.auth.uid == userId || isAdmin());
+      allow list: if isAdmin();
+      allow create: if isSignedIn() && request.auth.uid == userId;
+      allow update: if isSignedIn() && (request.auth.uid == userId || isAdmin());
+      allow delete: if isAdmin();
+    }
+
+    // Admins registry
+    match /admins/{adminId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+
+    // Listing Packages (Configurable marketplace plans)
+    match /packages/{packageId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Package Purchases
+    match /package_purchases/{purchaseId} {
+      allow get: if isSignedIn() && (resource.data.userId == request.auth.uid || isAdmin());
+      allow list: if isSignedIn() && (resource.data.userId == request.auth.uid || isAdmin());
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+      allow update, delete: if isAdmin();
+    }
+
+    // Properties collection
+    match /properties/{propertyId} {
+      allow get: if resource.data.approvalStatus == 'APPROVED' || 
+                   (isSignedIn() && (resource.data.ownerId == request.auth.uid || resource.data.agentId == request.auth.uid)) ||
+                   isAdmin();
+      
+      allow list: if resource.data.approvalStatus == 'APPROVED' || 
+                    (isSignedIn() && (resource.data.ownerId == request.auth.uid || resource.data.agentId == request.auth.uid)) ||
+                    isAdmin();
+
+      allow create: if isSignedIn() && (
+        isAdmin() ||
+        request.resource.data.ownerId == request.auth.uid ||
+        request.resource.data.agentId == request.auth.uid
+      );
+
+      allow update: if isAdmin() || (
+        isSignedIn() && (
+          resource.data.ownerId == request.auth.uid ||
+          resource.data.agentId == request.auth.uid
+        )
+      );
+
+      allow delete: if isAdmin() || (
+        isSignedIn() && resource.data.ownerId == request.auth.uid
+      );
+    }
+
+    // Inquiries collection
+    match /inquiries/{inquiryId} {
+      allow create: if true;
+      allow get, list: if isAdmin() || (
+        isSignedIn() && (
+          resource.data.ownerId == request.auth.uid ||
+          resource.data.assignedAgentId == request.auth.uid ||
+          (resource.data.email != null && resource.data.email == request.auth.token.email)
+        )
+      );
+      allow update: if isAdmin() || (
+        isSignedIn() && (
+          resource.data.ownerId == request.auth.uid ||
+          resource.data.assignedAgentId == request.auth.uid
+        )
+      );
+      allow delete: if isAdmin();
+    }
+
+    // Site Visits collection
+    match /site_visits/{visitId} {
+      allow create: if true;
+      allow get, list: if isAdmin() || (
+        isSignedIn() && (
+          resource.data.ownerId == request.auth.uid ||
+          resource.data.assignedAgentId == request.auth.uid ||
+          (resource.data.email != null && resource.data.email == request.auth.token.email)
+        )
+      );
+      allow update: if isAdmin() || (
+        isSignedIn() && (
+          resource.data.ownerId == request.auth.uid ||
+          resource.data.assignedAgentId == request.auth.uid
+        )
+      );
+      allow delete: if isAdmin();
+    }
+  }
+}

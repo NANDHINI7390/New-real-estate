@@ -38,10 +38,19 @@ import { AdminAgentsTab } from './components/admin/AdminAgentsTab';
 import { AdminClientsTab } from './components/admin/AdminClientsTab';
 import { AdminAnalyticsTab } from './components/admin/AdminAnalyticsTab';
 import { AdminSettingsTab } from './components/admin/AdminSettingsTab';
+import { AdminApprovalsTab } from './components/admin/AdminApprovalsTab';
+import { AdminPackagesTab } from './components/admin/AdminPackagesTab';
+import { AdminPaymentsTab } from './components/admin/AdminPaymentsTab';
+import { AdminUsersTab } from './components/admin/AdminUsersTab';
 import { AddPropertyModal } from './components/admin/AddPropertyModal';
 
+// Seller & Agent Components
+import { SellerDashboard } from './components/seller/SellerDashboard';
+import { AgentDashboard } from './components/agent/AgentDashboard';
+import { ListPropertyFlow } from './components/seller/ListPropertyFlow';
+
 const AppContent: React.FC = () => {
-  const { viewMode, customerPage, adminTab } = useRealEstate();
+  const { viewMode, customerPage, setCustomerPage, adminTab } = useRealEstate();
 
   // Modals state
   const [inquiryModalOpen, setInquiryModalOpen] = useState(false);
@@ -65,8 +74,8 @@ const AppContent: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#F7F5F0] text-[#20252B] font-sans flex flex-col selection:bg-[#102A43] selection:text-white">
-      {viewMode === 'customer' ? (
-        /* CUSTOMER PUBLIC SHOWCASE PORTAL */
+      {/* 1. BUYER / CUSTOMER VIEW */}
+      {viewMode === 'customer' && (
         <div className="flex-1 flex flex-col">
           <Navbar
             onOpenScheduleModal={() => handleOpenSchedule()}
@@ -126,6 +135,21 @@ const AppContent: React.FC = () => {
               />
             )}
 
+            {customerPage === 'list-property' && (
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+                <ListPropertyFlow
+                  onCancel={() => {
+                    setCustomerPage('home');
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }}
+                  onSuccess={() => {
+                    setCustomerPage('home');
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }}
+                />
+              </div>
+            )}
+
             {customerPage === 'about' && <AboutView />}
 
             {customerPage === 'contact' && <ContactView />}
@@ -135,8 +159,20 @@ const AppContent: React.FC = () => {
 
           <Footer />
         </div>
-      ) : (
-        /* ADMIN & AGENT MANAGEMENT DASHBOARD */
+      )}
+
+      {/* 2. PROPERTY OWNER / SELLER DASHBOARD */}
+      {viewMode === 'seller' && (
+        <SellerDashboard />
+      )}
+
+      {/* 3. REAL ESTATE AGENT / BROKER PORTAL */}
+      {viewMode === 'agent' && (
+        <AgentDashboard />
+      )}
+
+      {/* 4. ADMIN & MODERATION DASHBOARD */}
+      {viewMode === 'admin' && (
         <div className="flex-1 flex min-h-screen bg-[#F7F5F0]">
           <AdminSidebar
             mobileOpen={mobileAdminSidebarOpen}
@@ -149,17 +185,21 @@ const AppContent: React.FC = () => {
               onToggleMobileSidebar={() => setMobileAdminSidebarOpen((prev) => !prev)}
             />
 
-            <main className="flex-1 overflow-y-auto w-full">
+            <main className="flex-1 overflow-y-auto w-full p-4 sm:p-6 lg:p-8">
               {adminTab === 'overview' && (
                 <AdminOverviewTab
                   onOpenAddPropertyModal={() => setAddPropertyModalOpen(true)}
                 />
               )}
+              {adminTab === 'approvals' && <AdminApprovalsTab />}
               {adminTab === 'properties' && (
                 <AdminPropertiesTab
                   onOpenAddPropertyModal={() => setAddPropertyModalOpen(true)}
                 />
               )}
+              {adminTab === 'packages' && <AdminPackagesTab />}
+              {adminTab === 'payments' && <AdminPaymentsTab />}
+              {adminTab === 'users' && <AdminUsersTab />}
               {adminTab === 'inquiries' && <AdminInquiriesTab />}
               {adminTab === 'visits' && <AdminVisitsTab />}
               {adminTab === 'agents' && <AdminAgentsTab />}

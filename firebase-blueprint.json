@@ -1,0 +1,222 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile with role-based access for Marketplace",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "uid": { "type": "string" },
+        "email": { "type": "string" },
+        "displayName": { "type": "string" },
+        "role": {
+          "type": "string",
+          "enum": ["buyer", "seller", "agent", "admin"]
+        },
+        "phone": { "type": "string" },
+        "agencyName": { "type": "string" },
+        "photoURL": { "type": "string" },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["uid", "email", "role", "createdAt"]
+    },
+    "Admin": {
+      "title": "Admin",
+      "description": "System administrator identity",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["uid", "email", "createdAt"]
+    },
+    "Property": {
+      "title": "Property",
+      "description": "Real estate property listing on the marketplace",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "slug": { "type": "string" },
+        "tagline": { "type": "string" },
+        "location": { "type": "string" },
+        "subLocation": { "type": "string" },
+        "locality": { "type": "string" },
+        "price": { "type": "number" },
+        "displayPrice": { "type": "string" },
+        "priceNegotiable": { "type": "boolean" },
+        "pricePerSqFt": { "type": "number" },
+        "propertyType": {
+          "type": "string",
+          "enum": ["Villa", "Apartment", "Independent House", "Plot", "Commercial"]
+        },
+        "listingType": {
+          "type": "string",
+          "enum": ["BUY", "RENT"]
+        },
+        "status": {
+          "type": "string",
+          "enum": ["AVAILABLE", "FEATURED", "UNDER_OFFER", "SOLD", "RENTED", "INACTIVE"]
+        },
+        "approvalStatus": {
+          "type": "string",
+          "enum": ["PENDING_APPROVAL", "APPROVED", "REJECTED", "CHANGES_REQUESTED"]
+        },
+        "isFeatured": { "type": "boolean" },
+        "isPremium": { "type": "boolean" },
+        "isNew": { "type": "boolean" },
+        "heroImage": { "type": "string" },
+        "gallery": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "videoUrl": { "type": "string" },
+        "specs": { "type": "object" },
+        "description": { "type": "string" },
+        "highlights": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "amenities": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "nearbyFacilities": { "type": "array" },
+        "ownerId": { "type": "string" },
+        "ownerName": { "type": "string" },
+        "ownerEmail": { "type": "string" },
+        "ownerPhone": { "type": "string" },
+        "agentId": { "type": "string" },
+        "listingPackageId": { "type": "string" },
+        "viewsCount": { "type": "number" },
+        "rejectionReason": { "type": "string" },
+        "mapCoordinates": { "type": "object" },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["id", "title", "location", "price", "propertyType", "listingType", "status", "approvalStatus", "createdAt"]
+    },
+    "ListingPackage": {
+      "title": "ListingPackage",
+      "description": "Configurable listing package pricing model",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "price": { "type": "number" },
+        "durationDays": { "type": "number" },
+        "listingLimit": { "type": "number" },
+        "isFeaturedPlacement": { "type": "boolean" },
+        "isPremiumPlacement": { "type": "boolean" },
+        "features": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "badgeText": { "type": "string" },
+        "isActive": { "type": "boolean" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "name", "price", "durationDays", "features", "isActive"]
+    },
+    "PackagePurchase": {
+      "title": "PackagePurchase",
+      "description": "Paid listing package transaction record",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "userEmail": { "type": "string" },
+        "packageId": { "type": "string" },
+        "packageName": { "type": "string" },
+        "amount": { "type": "number" },
+        "durationDays": { "type": "number" },
+        "status": {
+          "type": "string",
+          "enum": ["ACTIVE", "EXPIRED"]
+        },
+        "paymentMethod": { "type": "string" },
+        "transactionRef": { "type": "string" },
+        "createdAt": { "type": "string" },
+        "expiresAt": { "type": "string" }
+      },
+      "required": ["id", "userId", "packageId", "amount", "status", "createdAt"]
+    },
+    "Inquiry": {
+      "title": "Inquiry",
+      "description": "Lead and inquiry from prospective buyer or tenant",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "refNumber": { "type": "string" },
+        "customerName": { "type": "string" },
+        "phone": { "type": "string" },
+        "email": { "type": "string" },
+        "propertyId": { "type": "string" },
+        "propertyTitle": { "type": "string" },
+        "listingType": { "type": "string" },
+        "budget": { "type": "string" },
+        "message": { "type": "string" },
+        "status": { "type": "string" },
+        "assignedAgentId": { "type": "string" },
+        "ownerId": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "customerName", "phone", "propertyId", "status", "createdAt"]
+    },
+    "SiteVisit": {
+      "title": "SiteVisit",
+      "description": "In-person property inspection appointment",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "refNumber": { "type": "string" },
+        "customerName": { "type": "string" },
+        "phone": { "type": "string" },
+        "email": { "type": "string" },
+        "propertyId": { "type": "string" },
+        "propertyTitle": { "type": "string" },
+        "propertyLocation": { "type": "string" },
+        "date": { "type": "string" },
+        "timeSlot": { "type": "string" },
+        "status": { "type": "string" },
+        "assignedAgentId": { "type": "string" },
+        "ownerId": { "type": "string" },
+        "notes": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "customerName", "phone", "propertyId", "date", "timeSlot", "status", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User profiles and role information"
+    },
+    "/admins/{adminId}": {
+      "schema": "Admin",
+      "description": "Registered system administrators"
+    },
+    "/properties/{propertyId}": {
+      "schema": "Property",
+      "description": "Real estate properties submitted by sellers, agents, or admin"
+    },
+    "/packages/{packageId}": {
+      "schema": "ListingPackage",
+      "description": "Monetized listing packages configurable by admin"
+    },
+    "/package_purchases/{purchaseId}": {
+      "schema": "PackagePurchase",
+      "description": "Package purchase invoices and order history"
+    },
+    "/inquiries/{inquiryId}": {
+      "schema": "Inquiry",
+      "description": "Property inquiries from buyers and renters"
+    },
+    "/site_visits/{visitId}": {
+      "schema": "SiteVisit",
+      "description": "Scheduled site inspections"
+    }
+  }
+}
